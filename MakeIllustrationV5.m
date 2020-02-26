@@ -1,4 +1,6 @@
-function MakeIllustrationV5();
+% You must change input file address every time you want to use this code
+% on line 67.
+function[sum_pay]= MakeIllustrationV5();
 
 %% Fixing the Parameters
 global lw ms fsA fsL fsH fsT fname le bo wi he dx dy col wi2 he2 dx2
@@ -62,7 +64,7 @@ plotStatic(1,delta1,rvec1,'a');
 
 %% Plotting the evolutionary predictions
 delta1=1; delta2=1; delta3=1;
-plotEvo(1,delta1,rvec1,'d','InputDataXsetSize3_1.mat'); 
+plotEvo(1,delta1,rvec1,'d','InputDataXsetSize3_4.mat'); 
 % plotEvo(2,delta2,rvec2,'e','DataAL-V1.mat');
 % plotEvo(3,delta2,rvec2,'f','DataSN-V1.mat');
 
@@ -104,15 +106,17 @@ end
 
 %% Plotting the contour plot
 dxx=0.48; dyy=0.45; ss=0.1; epsi=0.03;
+
 for i=size(EVec,1):-1:1;
     %EVec(i,:)
     %debug infos to find why we have white areas?!
-    tmp_val = sum(Pay(i,:));
-    if (tmp_val<10.003)
-        EVec(i,:)
-        tmp_val
-        i
-    end
+%     tmp_val = sum(Pay(i,:));
+%     sum_pay(i) = tmp_val;
+%     if (tmp_val<1.1)
+%         EVec(i,:)
+%         tmp_val
+%         i
+%     end
     E1=EVec(i,1:3); E2=(1-epsi)*E1+epsi*(1-E1); 
     e=E2(1)*x1+E2(2)*x2+E2(3)*x3; 
     f1=e(1)+ss*[-dxx dxx dxx-dxx*(E1(1)==0) -dxx+dxx*(E1(2)==0)]; f2=e(2)+ss*[-dyy -dyy dyy dyy]-0.02;
