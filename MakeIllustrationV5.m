@@ -64,7 +64,7 @@ plotStatic(1,delta1,rvec1,'a');
 
 %% Plotting the evolutionary predictions
 delta1=1; delta2=1; delta3=1;
-plotEvo(1,delta1,rvec1,'d','InputDataXsetSize3_5.mat'); 
+plotEvo(1,delta1,rvec1,'d','InputDataXsetSize3_1.mat'); 
 % plotEvo(2,delta2,rvec2,'e','DataAL-V1.mat');
 % plotEvo(3,delta2,rvec2,'f','DataSN-V1.mat');
 
@@ -96,8 +96,9 @@ ax1=axes('Position',[le+(wi+dx)*(nr-1)+dx2 bo wi2 he2]);
 axis([-1.05 1.05 -sqrt(3)*0.1 sqrt(3)*1.1]); hold on
 edges=[-1 0; 1 0; 0 sqrt(3)]; 
 x1=edges(1,:); x2=edges(2,:); x3=edges(3,:);
-load(datafile); sumpi=sum(Pay,2); 
-
+%rvec
+load(datafile); sumpi=sum(Pay,2);  PiMax=max(sumpi);
+%rvec
 if nr==1
 text(-1.9,sqrt(3)/2,'Evolutionary analysis','FontSize',fsL,'Color',col(5,:),...
     'FontName',fname,'Rotation',90,'HorizontalAlignment','center','FontWeight','bold');
@@ -106,6 +107,8 @@ end
 
 %% Plotting the contour plot
 dxx=0.48; dyy=0.45; ss=0.1; epsi=0.03;
+
+
 
 for i=size(EVec,1):-1:1;
     %EVec(i,:)
@@ -120,12 +123,13 @@ for i=size(EVec,1):-1:1;
     E1=EVec(i,1:3); E2=(1-epsi)*E1+epsi*(1-E1); 
     e=E2(1)*x1+E2(2)*x2+E2(3)*x3; 
     f1=e(1)+ss*[-dxx dxx dxx-dxx*(E1(1)==0) -dxx+dxx*(E1(2)==0)]; f2=e(2)+ss*[-dyy -dyy dyy dyy]-0.02;
-    cl=getcolor(sumpi(i),nr); 
+    cl=getcolor(sumpi(i),nr, PiMax); 
 %     for index=1:4
 %         if (f1(index)==-0.236 && f2(index)==0.6382)
 %             E1
 %         end
 %     end
+    %[i, cl]
     fill(f1,f2,cl,'LineStyle','none'); 
 end
 
@@ -145,12 +149,14 @@ text(x3(1),x3(2)+dyL+0.035,{'Full endowment','to player 1'},'FontSize',fsT,...
     'FontName',fname,'HorizontalAlignment','center'); 
 axis off
 
-%% Color legend 
-if nr==1 
-    xmax=1.75; xmin=1; xtl={'1.00','1.25','1.50','1.75'};
-else
-    xmax=2.4; xmin=1.2; xtl={'1.2','1.6','2.0','2.4'}; 
-end
+%% Color legend
+%if nr==1 
+%    xmax=PiMax; xmin=1; xtl={'1.00','1.25','1.50','1.75'};
+%else
+%    xmax=PiMax; xmin=1.2; xtl={'1.2','1.6','2.0','2.4'}; 
+%end
+xmax=PiMax; xmin=1; xtl={xmin,round(xmin + ((xmax-xmin)/3),2),round(xmax - ((xmax-xmin)/3),2),round(xmax,2)};
+
 ax2=axes('Position',[le+(wi+dx)*(nr-1) bo-0.05 wi 0.01],'XTick',0:1/3:1,...
     'XTickLabel',xtl,'FontSize',fsT,'FontName',fname,'YTick',[]); 
 box(ax2,'on'); hold on
@@ -158,7 +164,7 @@ axis([-0.05 1.05 -1 1]);
 
 ss=0.01; 
 for x=0:ss:1; 
-    cl=getcolor((1-x)*xmin+x*xmax,nr);
+    cl=getcolor((1-x)*xmin+x*xmax,nr, PiMax);
     fill(x+ss*[-0.55 0.55 0.55 -0.55],[-0.5 -0.5 0.5 0.5],cl,'LineStyle','none');
 end
 xlabel('Group payoff','FontSize',fsT,'FontName',fname,'Position',[0.5,-6]);
@@ -270,16 +276,18 @@ end
 
 
 
-function cl=getcolor(pi,nr); 
+function cl=getcolor(pi,nr, PiMax); 
 global col
 PiMin=1;
-if nr==1 
-    PiMax=1.75; 
-elseif nr==2
-    PiMax=2.4;  
-elseif nr==3
-    PiMax=2.4;
-end
+
+%if nr==1 
+%    PiMax=1.75; 
+%elseif nr==2
+%    PiMax=2.4;  
+%elseif nr==3
+%    PiMax=2.4;
+%end
+% or we can use 3 instead of PiMax to compare better all examples!
 x=(log(pi)-log(PiMin))^2/(log(PiMax)-log(PiMin))^2;
 cl=x*col(5,:)+(1-x)*[1 1 1]; 
 end
