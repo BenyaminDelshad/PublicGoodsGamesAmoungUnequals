@@ -56,16 +56,20 @@ PlotGameSetup(1,'a');
 
 %% Plotting the static predictions
 delta1=0.8; delta2=0.3; delta3=0.35;
-rvec1=[2 2 2]; rvec2=[1.1 1.5 2.9]; 
-plotStatic(1,delta1,rvec1,'a'); 
+Input_file = 'InputDataXsetSize3_5.mat';
+load(Input_file);
+%rvec1=[2 2 2]; rvec2=[1.1 1.5 2.9]; 
+rvec1 = rvec;
+rvec2 = rvec;
+%plotStatic(1,delta1,rvec1,'a'); 
 % plotStatic(2,delta2,rvec2,'b');
 % plotStatic(3,delta3,rvec2,'c');
 %plotStaticLegend(); 
 
 %% Plotting the evolutionary predictions
 delta1=1; delta2=1; delta3=1;
-plotEvo(1,delta1,rvec1,'d','InputDataXsetSize3_1.mat'); 
-% plotEvo(2,delta2,rvec2,'e','DataAL-V1.mat');
+plotEvo(1,delta1,rvec1,'d',Input_file); 
+plotEvo(2,delta2,rvec2,'e',Input_file);
 % plotEvo(3,delta2,rvec2,'f','DataSN-V1.mat');
 
 end
@@ -97,7 +101,24 @@ axis([-1.05 1.05 -sqrt(3)*0.1 sqrt(3)*1.1]); hold on
 edges=[-1 0; 1 0; 0 sqrt(3)]; 
 x1=edges(1,:); x2=edges(2,:); x3=edges(3,:);
 %rvec
-load(datafile); sumpi=sum(Pay,2);  PiMax=max(sumpi);
+load(datafile);
+sumpi=sum(Pay,2);
+if(nr == 2)
+    sumpi = Coop(:,1); %Cooperation rates of Player 1!
+    for i=1:length(sumpi)
+        if (sumpi(i) < 0)
+            sumpi(i)=0;
+        end
+    end
+end
+sumpi
+PiMax=max(sumpi);
+PiMin=min(sumpi);
+
+%sumpi
+%PiMin
+%PiMax
+
 %rvec
 if nr==1
 text(-1.9,sqrt(3)/2,'Evolutionary analysis','FontSize',fsL,'Color',col(5,:),...
@@ -123,14 +144,16 @@ for i=size(EVec,1):-1:1;
     E1=EVec(i,1:3); E2=(1-epsi)*E1+epsi*(1-E1); 
     e=E2(1)*x1+E2(2)*x2+E2(3)*x3; 
     f1=e(1)+ss*[-dxx dxx dxx-dxx*(E1(1)==0) -dxx+dxx*(E1(2)==0)]; f2=e(2)+ss*[-dyy -dyy dyy dyy]-0.02;
-    cl=getcolor(sumpi(i),nr, PiMax); 
+    cl=getcolor(sumpi(i),nr, PiMin, PiMax); 
 %     for index=1:4
 %         if (f1(index)==-0.236 && f2(index)==0.6382)
 %             E1
 %         end
 %     end
     %[i, cl]
+    
     fill(f1,f2,cl,'LineStyle','none'); 
+    
 end
 
 %% Plotting the triangle
@@ -141,11 +164,11 @@ plot(mean(edges(:,1)),mean(edges(:,2)),'kx','MarkerSize',ms,'MarkerFaceColor','k
 %% Labels
 dyL=0.26; 
 text(-1,2,lett,'FontSize',fsH,'FontName',fname,'FontWeight','bold');
-text(x1(1)+0.175,x1(2)-dyL,{'Full endowment','to player 3'},'FontSize',fsT,...
+text(x1(1)+0.175,x1(2)-dyL,{'Full endowment','to player 1'},'FontSize',fsT,...
     'FontName',fname,'HorizontalAlignment','center'); 
 text(x2(1)-0.175,x2(2)-dyL,{'Full endowment','to player 2'},'FontSize',fsT,...
     'FontName',fname,'HorizontalAlignment','center'); 
-text(x3(1),x3(2)+dyL+0.035,{'Full endowment','to player 1'},'FontSize',fsT,...
+text(x3(1),x3(2)+dyL+0.035,{'Full endowment','to player 3'},'FontSize',fsT,...
     'FontName',fname,'HorizontalAlignment','center'); 
 axis off
 
@@ -155,7 +178,7 @@ axis off
 %else
 %    xmax=PiMax; xmin=1.2; xtl={'1.2','1.6','2.0','2.4'}; 
 %end
-xmax=PiMax; xmin=1; xtl={xmin,round(xmin + ((xmax-xmin)/3),2),round(xmax - ((xmax-xmin)/3),2),round(xmax,2)};
+xmax=PiMax; xmin=PiMin; xtl={round(xmin,2),round(xmin + ((xmax-xmin)/3),2),round(xmax - ((xmax-xmin)/3),2),round(xmax,2)};
 
 ax2=axes('Position',[le+(wi+dx)*(nr-1) bo-0.05 wi 0.01],'XTick',0:1/3:1,...
     'XTickLabel',xtl,'FontSize',fsT,'FontName',fname,'YTick',[]); 
@@ -164,10 +187,18 @@ axis([-0.05 1.05 -1 1]);
 
 ss=0.01; 
 for x=0:ss:1; 
-    cl=getcolor((1-x)*xmin+x*xmax,nr, PiMax);
+    cl=getcolor((1-x)*xmin+x*xmax,nr, PiMin, PiMax);
     fill(x+ss*[-0.55 0.55 0.55 -0.55],[-0.5 -0.5 0.5 0.5],cl,'LineStyle','none');
 end
-xlabel('Group payoff','FontSize',fsT,'FontName',fname,'Position',[0.5,-6]);
+if(nr == 1)
+    xlabel('Group payoff','FontSize',fsT,'FontName',fname,'Position',[0.5,-6]);
+end
+if(nr == 2)
+    xlabel('Player 1 Contributions','FontSize',fsT,'FontName',fname,'Position',[0.5,-6]);
+end
+if(nr == 3)
+    xlabel('Something!','FontSize',fsT,'FontName',fname,'Position',[0.5,-6]);
+end
 end
 
 
@@ -276,9 +307,14 @@ end
 
 
 
-function cl=getcolor(pi,nr, PiMax); 
+function cl=getcolor(pi,nr, PiMin, PiMax); 
 global col
-PiMin=1;
+%PiMin=1;
+if(nr==2) % I am not sure that it was a correct way!
+    PiMin = PiMin + 1;
+    PiMax = PiMax + 1;
+    pi = pi + 1;
+end
 
 %if nr==1 
 %    PiMax=1.75; 
