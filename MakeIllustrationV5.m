@@ -19,7 +19,7 @@ ax1=axes('Position',[le-0.35*dx 0 3*wi+3*dx 1]); hold on
 axis([-0.01 1.01 0 1]); dxf=(wi+dx*0.4)/(3*wi+2*dx); delf=0.27*dx/(3*wi+2*dx);
 grey1=242/256*ones(1,3);  
 blue1=[79,129,189]/256; 
-y1=0.005; y2=0.735; lwP=2;
+y1=0.005; y2=0.94; lwP=2;%change y2 from 0.735 to 0.94!
 rd=0.01; t1=pi:0.01:3*pi/2; t2=3*pi/2:0.01:2*pi; t3=0:0.01:pi/2; t4=pi/2:0.01:pi; 
 bxx=[rd+rd*cos(t1),dxf-rd+rd*cos(t2),dxf-rd+rd*cos(t3),rd+rd*cos(t4)]; 
 bxy=[y1+rd+rd*sin(t1),y1+rd+rd*sin(t2),y2-rd+rd*sin(t3),y2-rd+rd*sin(t4)]; 
@@ -29,18 +29,18 @@ fill(bxx+2*(dxf+delf),bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
 
 %fill(bxx+3*(dxf+delf),bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
 
-y1=0.76; y2=0.94; lwP=2;
-rd=0.01; t1=pi:0.01:3*pi/2; t2=3*pi/2:0.01:2*pi; t3=0:0.01:pi/2; t4=pi/2:0.01:pi; 
-bxx=[rd+rd*cos(t1),dxf-rd+rd*cos(t2),dxf-rd+rd*cos(t3),rd+rd*cos(t4)]; 
-bxy=[y1+rd+rd*sin(t1),y1+rd+rd*sin(t2),y2-rd+rd*sin(t3),y2-rd+rd*sin(t4)]; 
-fill(bxx,bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
-fill(bxx+dxf+delf,bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
-fill(bxx+2*(dxf+delf),bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
+% y1=0.76; y2=0.94; lwP=2;
+% rd=0.01; t1=pi:0.01:3*pi/2; t2=3*pi/2:0.01:2*pi; t3=0:0.01:pi/2; t4=pi/2:0.01:pi; 
+% bxx=[rd+rd*cos(t1),dxf-rd+rd*cos(t2),dxf-rd+rd*cos(t3),rd+rd*cos(t4)]; 
+% bxy=[y1+rd+rd*sin(t1),y1+rd+rd*sin(t2),y2-rd+rd*sin(t3),y2-rd+rd*sin(t4)]; 
+% fill(bxx,bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
+% fill(bxx+dxf+delf,bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
+% fill(bxx+2*(dxf+delf),bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
 
 %fill(bxx+3*(dxf+delf),bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
 
 S1=[0.065-0.028 0.420]; red=[0.8 0 0];  msS=8; lwS=2;
-plot(S1(1),S1(2),'o','Color',red,'MarkerSize',msS,'LineWidth',lwS); 
+%plot(S1(1),S1(2),'o','Color',red,'MarkerSize',msS,'LineWidth',lwS); 
 %text(S1(1)+0.015,S1(2)-0.0075,{'Extreme endowment inequality','prevents cooperation '},'Color',red,...
 %    'FontName',fname,'FontSize',fsT,'VerticalAlignment','middle'); 
 % S2=S1+[2*(wi+dx) 0]; 
@@ -60,14 +60,14 @@ PlotGameSetup(1,'a');
 
 %% Plotting the static predictions
 delta1=0.8; delta2=0.3; delta3=0.35;
-Input_file = 'InputDataXsetSize3_7.mat';
+Input_file = 'InputDataXsetSize3_5.mat';
 load(Input_file);
 %rvec1=[2 2 2]; rvec2=[1.1 1.5 2.9]; 
 rvec1 = rvec;
 rvec2 = rvec;
-%plotStatic(1,delta1,rvec1,'a'); 
-% plotStatic(2,delta2,rvec2,'b');
-% plotStatic(3,delta3,rvec2,'c');
+plotEvo2(1,delta1,rvec1,'a',Input_file); 
+% plotEvo2(2,delta2,rvec2,'b',Input_file);
+% plotEvo2(3,delta3,rvec2,'c',Input_file);
 %plotStaticLegend(); 
 
 %% Plotting the evolutionary predictions
@@ -85,7 +85,7 @@ global lw ms fsA fsL fsH fsT fname le bo wi he dx dy col
 ax1=axes('Position',[le+(wi+dx)*(nr-1) bo+2*dy wi he]);
 axis([-1.05 1.05 -sqrt(3)*0.1 sqrt(3)*1.1]); hold on
 
-if nr==1, head1='Symmetric and linear'; 
+if nr==1, head1='Head!'; 
 elseif nr==2, head1='Asymmetric and linear'; 
 elseif nr==3, head1='Symmetric and nonlinear'; 
 end
@@ -107,7 +107,10 @@ x1=edges(1,:); x2=edges(2,:); x3=edges(3,:);
 %rvec
 load(datafile);
 sumpi=sum(Pay,2);
-if(nr == 2)
+% group payoff previously but will changes in next lines
+% to Cooperation rates of each player!
+
+if(nr == 1)
     sumpi = Coop(:,1); %Cooperation rates of Player 1!
     for i=1:length(sumpi)
         if (sumpi(i) < 0)
@@ -115,8 +118,16 @@ if(nr == 2)
         end
     end
 end
-if(nr == 3)
+if(nr == 2)
     sumpi = Coop(:,2); %Cooperation rates of Player 2!
+    for i=1:length(sumpi)
+        if (sumpi(i) < 0)
+            sumpi(i)=0;
+        end
+    end
+end
+if(nr == 3)
+    sumpi = Coop(:,3); %Cooperation rates of Player 3!
     for i=1:length(sumpi)
         if (sumpi(i) < 0)
             sumpi(i)=0;
@@ -203,6 +214,110 @@ for x=0:ss:1;
     fill(x+ss*[-0.55 0.55 0.55 -0.55],[-0.5 -0.5 0.5 0.5],cl,'LineStyle','none');
 end
 if(nr == 1)
+    xlabel('Player 1 Contributions','FontSize',fsT,'FontName',fname,'Position',[0.5,-6]);
+end
+if(nr == 2)
+    xlabel('Player 2 Contributions','FontSize',fsT,'FontName',fname,'Position',[0.5,-6]);
+end
+if(nr == 3)
+    xlabel('Player 3 Contributions','FontSize',fsT,'FontName',fname,'Position',[0.5,-6]);
+end
+end
+
+
+
+function plotEvo2(nr,delta,rvec,lett, datafile);  % Prevously plotStatic!
+global lw ms fsA fsT fsL fsH fname le bo wi he dx dy col wi2 he2 dx2
+
+ax1=axes('Position',[le+(wi+dx)*(nr-1)+dx2 bo+dy wi2 he2]); 
+axis([-1.05 1.05 -sqrt(3)*0.1 sqrt(3)*1.1]); hold on
+edges=[-1 0; 1 0; 0 sqrt(3)]; 
+x1=edges(1,:); x2=edges(2,:); x3=edges(3,:);
+
+% if nr==1
+% text(-1.9,sqrt(3)/2,'Equilibrium analysis','FontSize',fsL,'Color',col(1,:),...
+%     'FontName',fname,'Rotation',90,'HorizontalAlignment','center','FontWeight','bold');
+% end
+fill([edges(:,1); edges(1,1)],[edges(:,2); edges(1,2)],'w','LineWidth',lw,'EdgeColor','k'); 
+
+
+% Copy plotEvo code part to edit here:
+
+load(datafile);
+sumpi=sum(Pay,2);
+if(nr == 2)
+    sumpi = Coop(:,1); %Cooperation rates of Player 1!
+    for i=1:length(sumpi)
+        if (sumpi(i) < 0)
+            sumpi(i)=0;
+        end
+    end
+end
+if(nr == 3)
+    sumpi = Coop(:,2); %Cooperation rates of Player 2!
+    for i=1:length(sumpi)
+        if (sumpi(i) < 0)
+            sumpi(i)=0;
+        end
+    end
+end
+
+PiMax=max(sumpi);
+PiMin=min(sumpi);
+
+if nr==1
+text(-1.9,sqrt(3)/2,'Evolutionary analysis','FontSize',fsL,'Color',col(5,:),...
+    'FontName',fname,'Rotation',90,'HorizontalAlignment','center','FontWeight','bold');
+end
+
+
+%% Plotting the contour plot
+dxx=0.48; dyy=0.45; ss=0.1; epsi=0.03;
+
+
+
+for i=size(EVec,1):-1:1;
+
+    E1=EVec(i,1:3); E2=(1-epsi)*E1+epsi*(1-E1); 
+    e=E2(1)*x1+E2(2)*x2+E2(3)*x3; 
+    f1=e(1)+ss*[-dxx dxx dxx-dxx*(E1(1)==0) -dxx+dxx*(E1(2)==0)]; f2=e(2)+ss*[-dyy -dyy dyy dyy]-0.02;
+    cl=getcolor(sumpi(i),nr, PiMin, PiMax); 
+    
+    fill(f1,f2,cl,'LineStyle','none'); 
+    
+end
+
+%% Plotting the triangle
+plot([edges(:,1); edges(1,1)],[edges(:,2); edges(1,2)],'k','LineWidth',lw); 
+plot(edges(:,1),edges(:,2),'ko','MarkerSize',ms,'MarkerFaceColor','k','LineWidth',lw); 
+plot(mean(edges(:,1)),mean(edges(:,2)),'kx','MarkerSize',ms,'MarkerFaceColor','k');
+
+%% Labels
+dyL=0.26; 
+text(-1,2,lett,'FontSize',fsH,'FontName',fname,'FontWeight','bold');
+text(x1(1)+0.175,x1(2)-dyL,{'Full endowment','to player 1'},'FontSize',fsT,...
+    'FontName',fname,'HorizontalAlignment','center'); 
+text(x2(1)-0.175,x2(2)-dyL,{'Full endowment','to player 2'},'FontSize',fsT,...
+    'FontName',fname,'HorizontalAlignment','center'); 
+text(x3(1),x3(2)+dyL+0.035,{'Full endowment','to player 3'},'FontSize',fsT,...
+    'FontName',fname,'HorizontalAlignment','center'); 
+axis off
+
+%% Color legend
+
+xmax=PiMax; xmin=PiMin; xtl={round(xmin,2),round(xmin + ((xmax-xmin)/3),2),round(xmax - ((xmax-xmin)/3),2),round(xmax,2)};
+
+ax2=axes('Position',[le+(wi+dx)*(nr-1) (bo+dy)-0.05 wi 0.01],'XTick',0:1/3:1,...
+    'XTickLabel',xtl,'FontSize',fsT,'FontName',fname,'YTick',[]); 
+box(ax2,'on'); hold on
+axis([-0.05 1.05 -1 1]); 
+
+ss=0.01; 
+for x=0:ss:1; 
+    cl=getcolor((1-x)*xmin+x*xmax,nr, PiMin, PiMax);
+    fill(x+ss*[-0.55 0.55 0.55 -0.55],[-0.5 -0.5 0.5 0.5],cl,'LineStyle','none');
+end
+if(nr == 1)
     xlabel('Group payoff','FontSize',fsT,'FontName',fname,'Position',[0.5,-6]);
 end
 if(nr == 2)
@@ -211,23 +326,10 @@ end
 if(nr == 3)
     xlabel('Player 2 Contributions','FontSize',fsT,'FontName',fname,'Position',[0.5,-6]);
 end
-end
 
 
-
-function plotStatic(nr,delta,rvec,lett); 
-global lw ms fsA fsT fsL fsH fname le bo wi he dx dy col wi2 he2 dx2
-
-ax1=axes('Position',[le+(wi+dx)*(nr-1)+dx2 bo+dy wi2 he2]); 
-axis([-1.05 1.05 -sqrt(3)*0.1 sqrt(3)*1.1]); hold on
-edges=[-1 0; 1 0; 0 sqrt(3)]; 
-x1=edges(1,:); x2=edges(2,:); x3=edges(3,:);
-
-if nr==1
-text(-1.9,sqrt(3)/2,'Equilibrium analysis','FontSize',fsL,'Color',col(1,:),...
-    'FontName',fname,'Rotation',90,'HorizontalAlignment','center','FontWeight','bold');
-end
-fill([edges(:,1); edges(1,1)],[edges(:,2); edges(1,2)],'w','LineWidth',lw,'EdgeColor','k'); 
+% End copy plotEvo part to edit here! start main code of this part in
+% prevous code:
 
 %% Calculating the thresholds for the players' endowments
 % if nr==3
@@ -322,7 +424,7 @@ end
 function cl=getcolor(pi,nr, PiMin, PiMax); 
 global col
 %PiMin=1;
-if(nr~=1) % I am not sure that it was a correct way!
+if(PiMin < 1) % I am not sure that it was a correct way!
     PiMin = PiMin + 1;
     PiMax = PiMax + 1;
     pi = pi + 1;
