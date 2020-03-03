@@ -60,7 +60,7 @@ PlotGameSetup(1,'a');
 
 %% Plotting the static predictions
 delta1=0.8; delta2=0.3; delta3=0.35;
-Input_file = 'InputDataXsetSize3_8.mat';
+Input_file = 'Inputs/InputDataXsetSize3_8.mat';
 %Input_file = 'TempInputData3.mat';
 
 load(Input_file);
