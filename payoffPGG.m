@@ -1,4 +1,4 @@
-function [pi,coop,Mat]=payoffPGG(p1,p2,p3,evec,rvec,Xset,nPlayer)
+function [pi,coop,Mat]=payoffPGG(p1,p2,p3,evec,rvec,Xset1, Xset2, Xset3,nPlayer)
 
 % pi,coop ... payoffs and cooperation rates of the three players
 % p1,p2,p3 ... players' strategies. 
@@ -6,6 +6,7 @@ function [pi,coop,Mat]=payoffPGG(p1,p2,p3,evec,rvec,Xset,nPlayer)
 %%% Update: p1,p2,p3 are two dimentional arrays give the probability the
 %%% player choose cooperation rate x_i from Xset, 8 * 2 for two cooperation
 %%% rate options, 27 * 3 for three, 64 * 4 for four and ...
+%%% Xset_i is the set of available cooperation rate for player i.
 % given the players 1,2,3 chose the actions i,j,k in {C,D} in previous
 % round. 
 % evec=(e1,e2,e3) ... individual endowments
@@ -14,12 +15,14 @@ function [pi,coop,Mat]=payoffPGG(p1,p2,p3,evec,rvec,Xset,nPlayer)
 %% Parameters and preparations
 pi=zeros(1,nPlayer); coop=zeros(1,nPlayer); 
 % OS=[1 1 1; 1 1 0; 1 0 1; 1 0 0; 0 1 1; 0 1 0; 0 0 1; 0 0 0]; % Possible outcomes of one-shot game
-OS=zeros(length(Xset)^nPlayer,nPlayer);
+nSituation = length(Xset1) * length(Xset2) * length(Xset3); 
+OS=zeros(nSituation,nPlayer);
+%OS=zeros(length(Xset)^nPlayer,nPlayer);
 index = 1;
-for i=1:length(Xset)
-    for j=1:length(Xset)
-        for k=1:length(Xset)
-            OS(index,:) = [Xset(i), Xset(j), Xset(k)];
+for i=1:length(Xset1)
+    for j=1:length(Xset2)
+        for k=1:length(Xset3)
+            OS(index,:) = [Xset1(i), Xset2(j), Xset3(k)];
             OS2(index,:) = [i,j,k]; % keep index instead of exact value because we need it!
             index = index + 1;
         end

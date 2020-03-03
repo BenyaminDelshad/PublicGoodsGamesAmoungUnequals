@@ -1,4 +1,4 @@
-function [x1T,x2T,x3T,AvCoop,AvPi,nInv,evec,rvec,Xset,s,nGen]=EvolProc(evec,rvec,Xset,s,nGen)
+function [x1T,x2T,x3T,AvCoop,AvPi,nInv,evec,rvec,Xset1, Xset2, Xset3,s,nGen]=EvolProc(evec,rvec,Xset1, Xset2, Xset3,s,nGen)
 
 % Old version: Structure xiT: 1st-8th column: mem-1 strategy, 9th column: coopRate, 10th
 % column: payoff
@@ -22,27 +22,48 @@ C=clock; rng(C(5)*60+C(6)); % Setting up the random number generator
 % initilize starting strategies for all players, in this case, all of them
 % choose first action of Xset with probability 1.
 nPlayer=3; % But this code is not simply upgradable for using other values instead of 3 yet.
-p1=zeros(length(Xset)^nPlayer,length(Xset)); p2=p1; p3=p1;
-for i=1:(length(Xset)^nPlayer)
+nSituation = length(Xset1) * length(Xset2) * length(Xset3); 
+p1=zeros(nSituation,length(Xset1));
+p2=zeros(nSituation,length(Xset2));
+p3=zeros(nSituation,length(Xset3));
+%p1=zeros(length(Xset)^nPlayer,length(Xset)); p2=p1; p3=p1;
+for i=1:nSituation
     p1(i,1) = 1;
+    p2(i,1) = 1;
+    p3(i,1) = 1;
 end
-p2 = p1;
-p3 = p1;
+%p2 = p1;
+%p3 = p1;
 
 % end initialing p1, p2, p3
-x1T=zeros(nGen,length(Xset)^(nPlayer + 1) + 2); x2T=x1T; x3T=x1T;
+%x1T=zeros(nGen,length(Xset)^(nPlayer + 1) + 2); x2T=x1T; x3T=x1T;
+x1T=zeros(nGen,nSituation * length(Xset1) + 2);
+x2T=zeros(nGen,nSituation * length(Xset2) + 2);
+x3T=zeros(nGen,nSituation * length(Xset3) + 2);
+
 p_tmp = DimentionReducer(p1);
-for i=1:length(Xset)^(nPlayer + 1)
+for i=1:nSituation * length(Xset1)
     x1T(1,i) = p_tmp(i);
 end
-x2T = x1T;
-x3T = x1T;
+%x2T = x1T;
+%x3T = x1T;
+p_tmp = DimentionReducer(p2);
+for i=1:nSituation * length(Xset2)
+    x2T(1,i) = p_tmp(i);
+end
+p_tmp = DimentionReducer(p3);
+for i=1:nSituation * length(Xset3)
+    x3T(1,i) = p_tmp(i);
+end
 
-[pi,coop]=payoffPGG(p1,p2,p3,evec,rvec,Xset,nPlayer);
+[pi,coop]=payoffPGG(p1,p2,p3,evec,rvec,Xset1,Xset2,Xset3,nPlayer);
 % bug report: xTi instead of xiT ...!
-x1T(1,length(Xset)^(nPlayer + 1) + 1:length(Xset)^(nPlayer + 1) + 2)=[coop(1), pi(1)]; 
-x2T(1,length(Xset)^(nPlayer + 1) + 1:length(Xset)^(nPlayer + 1) + 2)=[coop(2), pi(2)]; 
-x3T(1,length(Xset)^(nPlayer + 1) + 1:length(Xset)^(nPlayer + 1) + 2)=[coop(3), pi(3)];
+%x1T(1,length(Xset)^(nPlayer + 1) + 1:length(Xset)^(nPlayer + 1) + 2)=[coop(1), pi(1)]; 
+%x2T(1,length(Xset)^(nPlayer + 1) + 1:length(Xset)^(nPlayer + 1) + 2)=[coop(2), pi(2)]; 
+%x3T(1,length(Xset)^(nPlayer + 1) + 1:length(Xset)^(nPlayer + 1) + 2)=[coop(3), pi(3)];
+x1T(1,nSituation * length(Xset1) + 1:nSituation * length(Xset1) + 2)=[coop(1), pi(1)]; 
+x2T(1,nSituation * length(Xset2) + 1:nSituation * length(Xset2) + 2)=[coop(2), pi(2)]; 
+x3T(1,nSituation * length(Xset3) + 1:nSituation * length(Xset3) + 2)=[coop(3), pi(3)];
 
 nInv=zeros(1,nPlayer); 
 
@@ -50,13 +71,22 @@ nInv=zeros(1,nPlayer);
 for i=1:nGen-1
     % Randomly choosing a player
     zR=rand(1); iPop=floor(3*zR)+1; 
-    pMut=rand(length(Xset)^nPlayer,length(Xset)); % Memory-1
-    for j=1:length(Xset)^nPlayer
+    %pMut=rand(length(Xset)^nPlayer,length(Xset)); % Memory-1
+    pMut = [];
+    if iPop==1
+        pMut=rand(nSituation,length(Xset1)); % Memory-1
+    elseif iPop==2
+        pMut=rand(nSituation,length(Xset2)); % Memory-1
+    else
+        pMut=rand(nSituation,length(Xset3)); % Memory-1
+    end
+    
+    for j=1:nSituation
         pMut(j,:) = pMut(j,:) / sum(pMut(j,:)); % sum of probabilities must be 1!
     end
     % Player 1 explores a new strategy
     if iPop==1 
-        [pi,coop]=payoffPGG(pMut,p2,p3,evec,rvec,Xset,nPlayer);
+        [pi,coop]=payoffPGG(pMut,p2,p3,evec,rvec,Xset1,Xset2,Xset3,nPlayer);
         rho=1/(1+exp(-s*(pi(1)-x1T(i,end))));
         rn=rand(1);
         if rn<rho
@@ -74,7 +104,7 @@ for i=1:nGen-1
     
     % Player 2 explores a new strategy
     elseif iPop==2 
-        [pi,coop]=payoffPGG(p1,pMut,p3,evec,rvec,Xset,nPlayer);
+        [pi,coop]=payoffPGG(p1,pMut,p3,evec,rvec,Xset1,Xset2,Xset3,nPlayer);
         rho=1/(1+exp(-s*(pi(2)-x2T(i,end))));
         rn=rand(1);
         if rn<rho
@@ -91,7 +121,7 @@ for i=1:nGen-1
         
     % Player 3 explores a new strategy
     else
-        [pi,coop]=payoffPGG(p1,p2,pMut,evec,rvec,Xset,nPlayer);
+        [pi,coop]=payoffPGG(p1,p2,pMut,evec,rvec,Xset1,Xset2,Xset3,nPlayer);
         rho=1/(1+exp(-s*(pi(3)-x3T(i,end))));
         rn=rand(1);
         if rn<rho
