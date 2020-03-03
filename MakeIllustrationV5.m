@@ -61,7 +61,7 @@ axis off
 
 %% Plotting the static predictions
 delta1=0.8; delta2=0.3; delta3=0.35;
-Input_file = 'Inputs/InputDataXsetSize3_5.mat';
+Input_file = 'Inputs/InputDataXsetSize3_8.mat';
 %Input_file = 'TempInputData3.mat';
 
 load(Input_file);
@@ -205,7 +205,12 @@ axis off
 %else
 %    xmax=PiMax; xmin=1.2; xtl={'1.2','1.6','2.0','2.4'}; 
 %end
-xmax=PiMax; xmin=PiMin; xtl={round(xmin,2),round(xmin + ((xmax-xmin)/3),2),round(xmax - ((xmax-xmin)/3),2),round(xmax,2)};
+xmax=PiMax; xmin=PiMin;
+if(nr ~= 0)
+    xmax = 1;
+    xmin = 0;
+end
+xtl={round(xmin,2),round(xmin + ((xmax-xmin)/3),2),round(xmax - ((xmax-xmin)/3),2),round(xmax,2)};
 
 ax2=axes('Position',[le+(wi+dx)*(nr) bo-b_factor*0.055 wi 0.01*b_factor],'XTick',0:1/3:1,...
     'XTickLabel',xtl,'FontSize',fsT,'FontName',fname,'YTick',[]); 
@@ -431,9 +436,11 @@ end
 function cl=getcolor(pi,nr, PiMin, PiMax); 
 global col
 %PiMin=1;
-if(PiMin < 1) % I am not sure that it was a correct way!
+
+if(nr ~= 0) % I am not sure that it was a correct way!
     PiMin = PiMin + 1;
     PiMax = PiMax + 1;
+    PiMax = 2;
     pi = pi + 1;
 end
 
