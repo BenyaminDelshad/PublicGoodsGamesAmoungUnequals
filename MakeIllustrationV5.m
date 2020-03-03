@@ -3,10 +3,11 @@
 function[sum_pay]= MakeIllustrationV5();
 
 %% Fixing the Parameters
-global lw ms fsA fsL fsH fsT fname le bo wi he dx dy col wi2 he2 dx2
- 
+global lw ms fsA fsL fsH fsT fname le bo wi he dx dy col wi2 he2 dx2 b_factor
+
+b_factor = 8/3;
 lw=3; ms=10; fsT=10; fsA=12; fsL=12; fsH=16; fname='Arial'; 
-le=0.076; bo=0.105; wi=0.195; he=wi*75/60; wi2=wi*0.9; he2=he*0.9; dx2=wi*0.05; dx=0.145; dy=0.365; 
+le=0.076; bo=b_factor*0.105; wi=0.165; he=wi*b_factor*90/60; wi2=wi*0.9; he2=he*0.9; dx2=wi*0.05; dx=0.07; dy=b_factor*0.4; % change dy from 0.365 to 0.55
 col=[0 0.447 0.741;
     0.85 0.325 0.098;
     0.494 0.184 0.556;
@@ -14,18 +15,18 @@ col=[0 0.447 0.741;
     0.466 0.674 0.188];
 
 %% Plotting the general graphical structure 
-figure('Position',[300,300,900,750]); % 300 - 300 - 1200 - 750 
+figure('Position',[300,300,1200,800 / b_factor]); % 300 - 300 - 1200 - 750 
 ax1=axes('Position',[le-0.35*dx 0 3*wi+3*dx 1]); hold on
 axis([-0.01 1.01 0 1]); dxf=(wi+dx*0.4)/(3*wi+2*dx); delf=0.27*dx/(3*wi+2*dx);
 grey1=242/256*ones(1,3);  
 blue1=[79,129,189]/256; 
-y1=0.005; y2=0.94; lwP=2;%change y2 from 0.735 to 0.94!
+y1=0.005; y2=0.37; lwP=2;%change y2 from 0.735 to 0.94!
 rd=0.01; t1=pi:0.01:3*pi/2; t2=3*pi/2:0.01:2*pi; t3=0:0.01:pi/2; t4=pi/2:0.01:pi; 
 bxx=[rd+rd*cos(t1),dxf-rd+rd*cos(t2),dxf-rd+rd*cos(t3),rd+rd*cos(t4)]; 
 bxy=[y1+rd+rd*sin(t1),y1+rd+rd*sin(t2),y2-rd+rd*sin(t3),y2-rd+rd*sin(t4)]; 
-fill(bxx,bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
-fill(bxx+dxf+delf,bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
-fill(bxx+2*(dxf+delf),bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
+%fill(bxx,bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
+%fill(bxx+dxf+delf,bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
+%fill(bxx+2*(dxf+delf),bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
 
 %fill(bxx+3*(dxf+delf),bxy,grey1,'EdgeColor',blue1,'LineWidth',lwP);
 
@@ -54,29 +55,30 @@ he1=0.03; wi1=3*wi+3*dx; k=wi1;
 rd=0.006; t=0:0.01:2*pi; red=[0.8 0 0];  msS=8; 
 axis off
 
-PlotGameSetup(1,'a'); 
+% PlotGameSetup(1,'a'); 
 % PlotGameSetup(2,'b'); 
 % PlotGameSetup(3,'c'); 
 
 %% Plotting the static predictions
 delta1=0.8; delta2=0.3; delta3=0.35;
-Input_file = 'Inputs/InputDataXsetSize3_8.mat';
+Input_file = 'Inputs/InputDataXsetSize3_5.mat';
 %Input_file = 'TempInputData3.mat';
 
 load(Input_file);
 %rvec1=[2 2 2]; rvec2=[1.1 1.5 2.9]; 
 rvec1 = rvec;
 rvec2 = rvec;
-plotEvo2(1,delta1,rvec1,'a',Input_file); 
+%plotEvo2(1,delta1,rvec1,'a',Input_file); 
 % plotEvo2(2,delta2,rvec2,'b',Input_file);
 % plotEvo2(3,delta3,rvec2,'c',Input_file);
 %plotStaticLegend(); 
 
 %% Plotting the evolutionary predictions
 delta1=1; delta2=1; delta3=1;
-plotEvo(1,delta1,rvec1,'d',Input_file); 
-plotEvo(2,delta2,rvec2,'e',Input_file);
-plotEvo(3,delta2,rvec2,'f',Input_file);
+plotEvo(0,delta1,rvec1,'a',Input_file); 
+plotEvo(1,delta1,rvec1,'b',Input_file); 
+plotEvo(2,delta2,rvec2,'c',Input_file);
+plotEvo(3,delta2,rvec2,'d',Input_file);
 
 end
 
@@ -100,9 +102,9 @@ end
 
 
 function plotEvo(nr,delta,rvec,lett,datafile); 
-global lw ms fsA fsT fsL fsH fname le bo wi he dx col wi2 he2 dx2
+global lw ms fsA fsT fsL fsH fname le bo wi he dx col wi2 he2 dx2 b_factor
 
-ax1=axes('Position',[le+(wi+dx)*(nr-1)+dx2 bo wi2 he2]); 
+ax1=axes('Position',[le+(wi+dx)*(nr)+dx2 bo wi2 he2]); 
 axis([-1.05 1.05 -sqrt(3)*0.1 sqrt(3)*1.1]); hold on
 edges=[-1 0; 1 0; 0 sqrt(3)]; 
 x1=edges(1,:); x2=edges(2,:); x3=edges(3,:);
@@ -145,7 +147,7 @@ PiMin=min(sumpi);
 %PiMax
 
 %rvec
-if nr==1
+if nr==0
 text(-1.9,sqrt(3)/2,'Evolutionary analysis','FontSize',fsL,'Color',col(5,:),...
     'FontName',fname,'Rotation',90,'HorizontalAlignment','center','FontWeight','bold');
 end
@@ -189,11 +191,11 @@ plot(mean(edges(:,1)),mean(edges(:,2)),'kx','MarkerSize',ms,'MarkerFaceColor','k
 %% Labels
 dyL=0.26; 
 text(-1,2,lett,'FontSize',fsH,'FontName',fname,'FontWeight','bold');
-text(x1(1)+0.175,x1(2)-dyL,{'Full endowment','to player 1'},'FontSize',fsT,...
+text(x1(1)+0.175,x1(2)-dyL-0.035,{'Full endowment','to player 1'},'FontSize',fsT,...
     'FontName',fname,'HorizontalAlignment','center'); 
-text(x2(1)-0.175,x2(2)-dyL,{'Full endowment','to player 2'},'FontSize',fsT,...
+text(x2(1)-0.175,x2(2)-dyL-0.035,{'Full endowment','to player 2'},'FontSize',fsT,...
     'FontName',fname,'HorizontalAlignment','center'); 
-text(x3(1),x3(2)+dyL+0.035,{'Full endowment','to player 3'},'FontSize',fsT,...
+text(x3(1),x3(2)+dyL+b_factor*0.035,{'Full endowment','to player 3'},'FontSize',fsT,...
     'FontName',fname,'HorizontalAlignment','center'); 
 axis off
 
@@ -205,7 +207,7 @@ axis off
 %end
 xmax=PiMax; xmin=PiMin; xtl={round(xmin,2),round(xmin + ((xmax-xmin)/3),2),round(xmax - ((xmax-xmin)/3),2),round(xmax,2)};
 
-ax2=axes('Position',[le+(wi+dx)*(nr-1) bo-0.05 wi 0.01],'XTick',0:1/3:1,...
+ax2=axes('Position',[le+(wi+dx)*(nr) bo-b_factor*0.055 wi 0.01*b_factor],'XTick',0:1/3:1,...
     'XTickLabel',xtl,'FontSize',fsT,'FontName',fname,'YTick',[]); 
 box(ax2,'on'); hold on
 axis([-0.05 1.05 -1 1]); 
@@ -214,6 +216,9 @@ ss=0.01;
 for x=0:ss:1; 
     cl=getcolor((1-x)*xmin+x*xmax,nr, PiMin, PiMax);
     fill(x+ss*[-0.55 0.55 0.55 -0.55],[-0.5 -0.5 0.5 0.5],cl,'LineStyle','none');
+end
+if(nr == 0)
+    xlabel('Group Payoff','FontSize',fsT,'FontName',fname,'Position',[0.5,-6]);
 end
 if(nr == 1)
     xlabel('Player 1 Contributions','FontSize',fsT,'FontName',fname,'Position',[0.5,-6]);
