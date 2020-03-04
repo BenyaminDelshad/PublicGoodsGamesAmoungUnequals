@@ -61,8 +61,10 @@ axis off
 
 %% Plotting the static predictions
 delta1=0.8; delta2=0.3; delta3=0.35;
-Input_file = 'Inputs/InputDataXsetSize3_8.mat';
+%Input_file = 'Inputs/InputDataXsetSize3_8.mat';
+%Input_file = 'Inputs/InputDataXsetSize3and2_9.mat';
 %Input_file = 'TempInputData3.mat';
+Input_file = 'Inputs/InputData_exact_Fig2_1MnGen.mat';
 
 load(Input_file);
 %rvec1=[2 2 2]; rvec2=[1.1 1.5 2.9]; 
