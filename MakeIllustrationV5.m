@@ -61,7 +61,7 @@ axis off
 
 %% Plotting the static predictions
 delta1=0.8; delta2=0.3; delta3=0.35;
-Input_file = 'Inputs/InputDataXsetSize3_7.mat';
+Input_file = 'Inputs/InputDataXsetSize3_11.mat';
 %Input_file = 'Inputs/InputDataXsetSize3and2_10.mat';
 %Input_file = 'TempInputData3.mat';
 %Input_file = 'Inputs/InputData_exact_Fig2_1MnGen.mat';
