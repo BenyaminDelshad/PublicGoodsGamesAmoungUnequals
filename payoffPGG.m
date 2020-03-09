@@ -32,10 +32,35 @@ nOS=size(OS,1); % number of outcomes
 PayOS=zeros(nOS,nPlayer); % Possible one-shot payoffs for the three players
 yvec=evec.*rvec; % players' absolute contributions
 for i=1:nOS
-    s=OS(i,:);
-    PayOS(i,1)=s*yvec'/nPlayer+(1-s(1))*evec(1);
-    PayOS(i,2)=s*yvec'/nPlayer+(1-s(2))*evec(2); 
-    PayOS(i,3)=s*yvec'/nPlayer+(1-s(3))*evec(3);
+    s=OS(i,:); % s = (s1,s2,s3) contribution rates of players in this case.
+    cur_payoff = 0;
+    overall_coop_rate = sum(s);
+    threshold_T = 1/3;
+    %threshold_T = 1/2;
+    %threshold_T = 2/3;
+    delta = 10; % fixed parameter you can change it. power of sigmoid!
+    our_way_of_payoff = 2; % choose your method here!
+    % we have three way of having payoff for players.
+      
+    if (our_way_of_payoff == 1) % way 1: Normally
+        cur_payoff = s*yvec';
+    
+    elseif (our_way_of_payoff == 2) % Way 2: Exact threshold
+        if(overall_coop_rate >= threshold_T)
+            cur_payoff = s*yvec';
+        else
+            cur_payoff = 0;
+        end
+        
+    elseif (our_way_of_payoff == 3) % Way 3: Sigmoid functions instead of exact threshold
+        cur_payoff = (s*yvec') / (1 + exp(-1 * delta * (overall_coop_rate - threshold_T)));
+    end
+    
+    % Assign payoffs: our payoff divided equally between players.
+    PayOS(i,1)=cur_payoff/nPlayer+(1-s(1))*evec(1);
+    PayOS(i,2)=cur_payoff/nPlayer+(1-s(2))*evec(2); 
+    PayOS(i,3)=cur_payoff/nPlayer+(1-s(3))*evec(3);
+    
 end
 
 
