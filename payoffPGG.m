@@ -35,11 +35,11 @@ for i=1:nOS
     s=OS(i,:); % s = (s1,s2,s3) contribution rates of players in this case.
     cur_payoff = 0;
     overall_coop_rate = sum(s);
-    %threshold_T = 1/3;
+    threshold_T = 1/3;
     %threshold_T = 1/2;
-    threshold_T = 2/3;
+    %threshold_T = 2/3;
     delta = 10; % fixed parameter you can change it. power of sigmoid!
-    our_way_of_payoff = 2; % choose your method here!
+    our_way_of_payoff = 3; % choose your method here!
     % we have three way of having payoff for players.
       
     if (our_way_of_payoff == 1) % way 1: Normally
