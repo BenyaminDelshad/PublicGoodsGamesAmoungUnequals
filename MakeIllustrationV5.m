@@ -66,7 +66,8 @@ delta1=0.8; delta2=0.3; delta3=0.35;
 %Input_file = 'TempInputData3.mat';
 %Input_file = 'Inputs/InputData_exact_Fig2_1MnGen.mat';
 %Input_file = 'Inputs/InputDataXsetSize3_29_SigmoidThreshold_3.mat';
-Input_file = 'Inputs/InputDataXsetSize3_14_2_ExactThreshold_OneFourth.mat';
+%Input_file = 'Inputs/InputDataXsetSize3_14_2_ExactThreshold_OneFourth.mat';
+Input_file = 'InputDataXsetSize3_14_ExactThreshold_1_repeat.mat';
 
 load(Input_file);
 %rvec1=[2 2 2]; rvec2=[1.1 1.5 2.9]; 
