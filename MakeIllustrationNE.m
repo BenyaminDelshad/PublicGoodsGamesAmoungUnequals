@@ -207,9 +207,18 @@ for i=size(EVec,1):-1:1;
         end
     end
     
-    if rejected_rules == 0
-        fill(f1,f2,col(1,:),'LineStyle','none'); 
+    %if rejected_rules == 0
+    %    fill(f1,f2,col(1,:),'LineStyle','none'); 
+    %end
+    %%% drawing for exact symmetric case based on new discoveries 
+    symmetric_r = rvec(1);
+    if (max(E1) < symmetric_r / nPlayer) && (ProbabilityOfNextRound >= ((1 - ((nPlayer - symmetric_r) / nPlayer) * candidates(nr + 1)) - symmetric_r / nPlayer) / ((1 - ((nPlayer - symmetric_r) / nPlayer) * candidates(nr + 1)) - max(E1)))
+        fill(f1,f2,col(1,:),'LineStyle','none');
     end
+    %%% end drawing for exact symmetric case based on new discoveries 
+    
+    
+    
 %    cl=getcolor(sumpi(i),nr, PiMin, PiMax); 
 %     for index=1:4
 %         if (f1(index)==-0.236 && f2(index)==0.6382)
