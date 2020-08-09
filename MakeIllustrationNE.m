@@ -168,9 +168,9 @@ dxx=0.48; dyy=0.45; ss=0.1; epsi=0.03;
 
 
 %candidates = [1/8, 1/3, 4/9, 1/2]; % set of thresholds to be used for drawing triangles
-candidates = [5/9, 3/4, 2/3, 7/8]; % because we should draw four different
+%candidates = [5/9, 3/4, 2/3, 7/8]; % because we should draw four different
 % graphs.
-%candidates = [0.02 0.1 0.9 0.98];
+candidates = [0.02 0.1 0.9 0.98];
 
 for i=size(EVec,1):-1:1;
     %EVec(i,:)
