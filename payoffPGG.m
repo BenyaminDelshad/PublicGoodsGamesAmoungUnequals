@@ -43,11 +43,11 @@ for i=1:nOS
     % comment this line.
     
     %threshold_T = 1/3;
-    threshold_T = 1/2;
-    %threshold_T = 2/3;
+    %threshold_T = 1/2;
+    threshold_T = 2/3;
     %threshold_T = 7/8;
     delta = 10; % fixed parameter you can change it. power of sigmoid!
-    our_way_of_payoff = 3; % choose your method here!
+    our_way_of_payoff = 2; % choose your method here!
     % we have three way of having payoff for players.
       
     if (our_way_of_payoff == 1) % way 1: Normally
